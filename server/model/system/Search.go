@@ -3,8 +3,6 @@ package system
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/redis/go-redis/v9"
-	"gorm.io/gorm"
 	"log"
 	"math"
 	"reflect"
@@ -15,6 +13,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/redis/go-redis/v9"
+	"gorm.io/gorm"
 )
 
 // SearchInfo 存储用于检索的信息
@@ -435,7 +436,7 @@ func GetMovieListByCid(cid int64, page *Page) []MovieBasicInfo {
 }
 
 // GetHotMovieByPid  获取指定类别的热门影片
-func GetHotMovieByPid(pid int64, page *Page) []SearchInfo {
+func GetHotMovieByPid(pid int64, page *Page) []MovieBasicInfo {
 	// 返回分页参数
 	//var count int64
 	//db.Mdb.Model(&SearchInfo{}).Where("pid", pid).Count(&count)
@@ -449,7 +450,14 @@ func GetHotMovieByPid(pid int64, page *Page) []SearchInfo {
 		log.Println(err)
 		return nil
 	}
-	return s
+
+	// 通过影片ID去redis中获取id对应数据信息
+	var list []MovieBasicInfo
+	for _, v := range s {
+		// 通过key搜索指定的影片信息 , MovieDetail:Cid6:Id15441
+		list = append(list, GetBasicInfoByKey(fmt.Sprintf(config.MovieBasicInfoKey, v.Cid, v.Mid)))
+	}
+	return list
 }
 
 // SearchFilmKeyword 通过关键字搜索库存中满足条件的影片名
