@@ -8,6 +8,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.1.0
 	github.com/redis/go-redis/v9 v9.0.2
 	github.com/robfig/cron/v3 v3.0.0
+	github.com/spf13/viper v1.19.0
 	gorm.io/driver/mysql v1.4.7
 	gorm.io/gorm v1.25.5
 )
@@ -52,7 +53,6 @@ require (
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.6.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/spf13/viper v1.19.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/temoto/robotstxt v1.1.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
