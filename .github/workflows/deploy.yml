@@ -17,6 +17,7 @@ jobs:
         with:
           go-version: 1.23
       - run: go version
+      - run: ll && pwd
       - run: cd ./server
       - run: go mod tidy
       - run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -o server
