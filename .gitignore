@@ -28,3 +28,6 @@ static/
 
 ProvideController.go
 ProvideLogic.go
+
+# air 热更新开发打包目录
+tmp/

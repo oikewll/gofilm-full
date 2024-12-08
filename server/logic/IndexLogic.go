@@ -27,7 +27,7 @@ func (i *IndexLogic) IndexPage() map[string]interface{} {
 	// 首页请求时长较高, 采用redis进行缓存, 在定时任务更新影片时清除对应缓存
 	// 判断是否存在缓存数据, 存在则直接将数据返回
 	Info := system.GetCacheData(config.IndexCacheKey)
-	if Info != nil {
+	if Info != nil && !config.IsDev {
 		return Info
 	}
 	Info = make(map[string]interface{})

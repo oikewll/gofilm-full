@@ -46,6 +46,21 @@ type Tag struct {
 	Value interface{} `json:"value"`
 }
 
+type PickSearch struct {
+	// 来自 SearchInfo 的字段
+	Pid         int64
+	Cid         int64
+	Mid         int64
+	Year        int
+	Hits        int
+	UpdateStamp int64
+	SearchInfo
+}
+type MergedMovieInfo struct {
+	PickSearch
+	MovieBasicInfo
+}
+
 func (s *SearchInfo) TableName() string {
 	return config.SearchTableName
 }
@@ -392,23 +407,29 @@ func SearchInfoToMdb(model int) {
 // ================================= API 数据接口信息处理 =================================
 
 // GetMovieListByPid  通过Pid 分类ID 获取对应影片的数据信息
-func GetMovieListByPid(pid int64, page *Page) []MovieBasicInfo {
+func GetMovieListByPid(pid int64, page *Page) []MergedMovieInfo {
 	// 返回分页参数
 	var count int64
 	db.Mdb.Model(&SearchInfo{}).Where("pid", pid).Count(&count)
 	page.Total = int(count)
 	page.PageCount = int((page.Total + page.PageSize - 1) / page.PageSize)
 	// 进行具体的信息查询
-	var s []SearchInfo
+	var s []PickSearch
 	if err := db.Mdb.Limit(page.PageSize).Offset((page.Current-1)*page.PageSize).Where("pid", pid).Order("update_stamp DESC").Find(&s).Error; err != nil {
 		log.Println(err)
 		return nil
 	}
-	// 通过影片ID去redis中获取id对应数据信息
-	var list []MovieBasicInfo
+	// 通过影片ID去redis中获取id对应数据信息，合并基础info
+	var list []MergedMovieInfo
 	for _, v := range s {
-		// 通过key搜索指定的影片信息 , MovieDetail:Cid6:Id15441
-		list = append(list, GetBasicInfoByKey(fmt.Sprintf(config.MovieBasicInfoKey, v.Cid, v.Mid)))
+		basicInfo := GetBasicInfoByKey(fmt.Sprintf(config.MovieBasicInfoKey, v.Cid, v.Mid))
+
+		mergedItem := MergedMovieInfo{
+			PickSearch:     v,
+			MovieBasicInfo: basicInfo,
+		}
+
+		list = append(list, mergedItem)
 	}
 	return list
 }
