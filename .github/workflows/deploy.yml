@@ -1,0 +1,51 @@
+name: 🚀Publish And Deploy
+on:
+  push:
+    branches:    
+      - main
+
+before:
+  hooks:
+    - go mod tidy
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 下载github上的源码
+      - name: Checkout
+        uses: actions/checkout@master
+      
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.23
+      - run: go version
+        
+
+      # 部署到yingshi服务器
+      # - name: Deploy for yingshi
+      #   uses: easingthemes/ssh-deploy@v2.1.5
+      #   env:
+      #     SSH_PRIVATE_KEY: ${{ secrets.KEY_YINGSHI }} # 服务器的key
+      #     ARGS: '-rltgoDzvO'  #(optional, default '-rltgoDzvO')
+      #     SOURCE: .output/ # 这是要复制到服务器的文件夹名称
+      #     REMOTE_HOST: ${{ secrets.HOST_YINGSHI }} # 你的服务器公网地址
+      #     REMOTE_USER: ${{ secrets.USERNAME_YINGSHI }} # 服务器登录用户名
+      #     TARGET: /home/wwwroot/gofilm-frontend/.output # 放到的目标地址
+      
+      # 重启yingshi服务
+      # - name: Restart server yingshi
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.HOST_YINGSHI }}
+      #     username: ${{ secrets.USERNAME_YINGSHI }}
+      #     key: ${{ secrets.KEY_YINGSHI }}
+      #     script: |
+      #       export NVM_DIR=~/.nvm
+      #       source ~/.nvm/nvm.sh
+      #       npm --version
+      #       pm2 --version
+      #       cd /home/wwwroot/gofilm-frontend/
+      #       pm2 restart deploy.json
+
