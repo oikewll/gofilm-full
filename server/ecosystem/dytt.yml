@@ -1,0 +1,29 @@
+system:
+  development: true
+  listener_port: 3601
+  max_goroutine: 10
+  film_picture:
+    upload_dir: ./static/upload/gallery
+    url_path: /upload/pic/poster/
+    access_path: /api/upload/pic/poster/
+
+redis:
+  addr: 54.254.247.126:6497
+  password: mbp17PamhdzZNZbD
+  db_no: 1
+
+mysql:
+  dsn: root:jm5Mrn13mzWJa3EQ@(54.254.247.126:25686)/FilmSite?charset=utf8mb4&parseTime=True&loc=Local
+
+database:
+  search_table: search
+  user_table: users
+  user_id_initial_val: 10000
+  file_table: files
+
+keys:
+  category_tree: CategoryTree
+  film_expired: 87600  # 10年的小时数
+  movie_list_info: MovieList:Cid%d
+  movie_detail: MovieDetail:Cid%d:Id%d
+  multiple_site_detail: MultipleSource:%s

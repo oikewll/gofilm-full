@@ -1,0 +1,12 @@
+{
+    "name": "gofilm-backend",
+    "script": "./service",
+    "exec_mode": "fork",
+    "instances": 1,
+    "out_file": "./logs/pm2-out-0.log",
+    "error_file": "./logs/pm2-err-0.log",
+    "merge_logs": true,
+    "log_data_format": "YYYY-MM-DD HH:mm Z",
+    "autorestart": true,
+    "max_memory_restart": "2G"
+}
