@@ -19,6 +19,8 @@ jobs:
       - run: go version
       - run: ls && pwd
       - run: cd ./server
+      - run: ls && pwd
+      - run: go version
       - run: go mod tidy
       - run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -o server/dist
         
