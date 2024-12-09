@@ -38,10 +38,6 @@ jobs:
           REMOTE_HOST: ${{ secrets.HOST_YINGSHI }} # 你的服务器公网地址
           REMOTE_USER: ${{ secrets.USERNAME_YINGSHI }} # 服务器登录用户名
           TARGET: /home/wwwroot/gofilm-backend/server # 放到的目标地址
-          SCRIPT_BEFORE: |
-            cd ./server
-            go mod tidy
-            CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -o server/dist
       
       # 重启yingshi服务
       # - name: Restart server yingshi

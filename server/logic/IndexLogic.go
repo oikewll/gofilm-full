@@ -130,16 +130,21 @@ func (i *IndexLogic) SearchFilmInfo(key string, page *system.Page) []system.Movi
 }
 
 // GetFilmCategory 根据Pid或Cid获取指定的分页数据
-func (i *IndexLogic) GetFilmCategory(id int64, idType string, page *system.Page) []system.MovieBasicInfo {
-	// 1. 根据不同类型进不同的查找
-	var basicList []system.MovieBasicInfo
+func (i *IndexLogic) GetFilmCategory(id int64, idType string, page *system.Page) []interface{} {
+	var resultList []interface{}
 	switch idType {
 	case "pid":
-		basicList = system.GetMovieListByPid(id, page)
+		pidList := system.GetMovieListByPid(id, page)
+		for _, item := range pidList {
+			resultList = append(resultList, item)
+		}
 	case "cid":
-		basicList = system.GetMovieListByCid(id, page)
+		cidList := system.GetMovieListByCid(id, page)
+		for _, item := range cidList {
+			resultList = append(resultList, item)
+		}
 	}
-	return basicList
+	return resultList
 }
 
 // GetPidCategory 获取pid对应的分类信息
