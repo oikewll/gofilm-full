@@ -23,8 +23,6 @@ jobs:
       # 部署到yingshi服务器
       - name: Deploy for yingshi
         uses: easingthemes/ssh-deploy@v2.1.5
-        with:
-          working-directory: ./server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.KEY_YINGSHI }} # 服务器的key
           ARGS: '-rltgoDzvO'  #(optional, default '-rltgoDzvO')
@@ -33,6 +31,7 @@ jobs:
           REMOTE_USER: ${{ secrets.USERNAME_YINGSHI }} # 服务器登录用户名
           TARGET: /home/wwwroot/gofilm-backend/server # 放到的目标地址
           SCRIPT_BEFORE: |
+            cd ./server
             go mod tidy
             CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -o server/dist
       
