@@ -61,6 +61,7 @@ jobs:
             npm --version
             pm2 --version
             cd /home/wwwroot/gofilm-backend/dist
+            pm2 restart deploy.json
             echo "✅ pm2 restart deploy.json"
 
       - name: Rename configure for dytt
