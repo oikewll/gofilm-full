@@ -24,18 +24,27 @@ jobs:
           go-version: 1.23
       - name: Install dependencies
         run: |
+          go version
           go mod tidy
-          echo "✅ 安装依赖文件"
+          echo "✅ 1. 安装依赖文件"
           mv ./ecosystem/yingshi.yml application.yml
-          echo "✅ 复制 application.yml 配置文件"
-      - run: go version
-      - run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -o dist/service
+          echo "✅ 2. 复制 yingshi.yml 配置文件"
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -o dist/service_yingshi
+          echo "✅ 3. 编译 yingshi"
+          mv ./ecosystem/dytt.yml application.yml
+          echo "✅ 4. 复制 dytt.yml 配置文件"
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -o dist/service_dytt
+          echo "✅ 5. 编译 dytt"
       - run: cp ./ecosystem/deploy.json dist # 复制一份启动文件
       - run: ls dist && pwd
       
       # 部署到yingshi服务器，把 dist 目录下的执行文件上传到服务器 的 /home/wwwroot/gofilm-backend/dist 目录下
       - name: Deploy for yingshi
         uses: easingthemes/ssh-deploy@v2.1.5
+      - run: |
+          echo ${{ secrets.HOST_YINGSHI }}
+          mv dist/service_dytt dist/service
+          echo "✅ 复制 service_dytt 到 service"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.KEY_YINGSHI }} # 服务器的key
           ARGS: '-rltgoDzvO'  #(optional, default '-rltgoDzvO')
