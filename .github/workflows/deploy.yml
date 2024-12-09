@@ -34,23 +34,22 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.KEY_YINGSHI }} # 服务器的key
           ARGS: '-rltgoDzvO'  #(optional, default '-rltgoDzvO')
-          SOURCE: dist # 这是要复制到服务器的文件夹名称
+          SOURCE: ../dist # 这是要复制到服务器的文件夹名称
           REMOTE_HOST: ${{ secrets.HOST_YINGSHI }} # 你的服务器公网地址
           REMOTE_USER: ${{ secrets.USERNAME_YINGSHI }} # 服务器登录用户名
           TARGET: /home/wwwroot/gofilm-backend/server # 放到的目标地址
       
       # 重启yingshi服务
-      # - name: Restart server yingshi
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.HOST_YINGSHI }}
-      #     username: ${{ secrets.USERNAME_YINGSHI }}
-      #     key: ${{ secrets.KEY_YINGSHI }}
-      #     script: |
-      #       export NVM_DIR=~/.nvm
-      #       source ~/.nvm/nvm.sh
-      #       npm --version
-      #       pm2 --version
-      #       cd /home/wwwroot/gofilm-backend/
-      #       pm2 restart deploy.json
+      - name: Restart server yingshi
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_YINGSHI }}
+          username: ${{ secrets.USERNAME_YINGSHI }}
+          key: ${{ secrets.KEY_YINGSHI }}
+          script: |
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            npm --version
+            pm2 --version
+            cd /home/wwwroot/gofilm-backend/
 
