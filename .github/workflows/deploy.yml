@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         run: |
           go mod tidy
+          echo "✅ 安装依赖文件"
+          mv ./ecosystem/yingshi.yml application.yml
+          echo "✅ 复制 application.yml 配置文件"
       - run: go version
       - run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -o dist/service
       - run: cp ./ecosystem/deploy.json dist # 复制一份启动文件
@@ -54,5 +57,4 @@ jobs:
             npm --version
             pm2 --version
             cd /home/wwwroot/gofilm-backend/dist
-            ll
-
+            echo "✅ pm2 restart deploy.json"
