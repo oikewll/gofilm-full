@@ -69,3 +69,30 @@ jobs:
           mv ./ecosystem/dytt.yml ./dist/application.yml
           ls -al dist && pwd
           echo "✅ 准备dytt二进制文件"
+      
+      # 部署到dytt服务器，把 dist 目录下的执行文件上传到服务器 的 /home/wwwroot/gofilm-backend/dist 目录下
+      - name: Deploy for dytt
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.KEY_DYTT }} # 服务器的key
+          ARGS: '-rltgoDzvO'  #(optional, default '-rltgoDzvO')
+          SOURCE: server/dist
+          REMOTE_HOST: ${{ secrets.HOST_DYTT }} # 你的服务器公网地址
+          REMOTE_USER: ${{ secrets.USERNAME_DYTT }} # 服务器登录用户名
+          TARGET: /home/wwwroot/gofilm-backend # 放到的目标地址
+      
+      # 重启dytt服务
+      - name: Restart server dytt
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DYTT }}
+          username: ${{ secrets.USERNAME_DYTT }}
+          key: ${{ secrets.KEY_DYTT }}
+          script: |
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            npm --version
+            pm2 --version
+            cd /home/wwwroot/gofilm-backend/dist
+            pm2 restart deploy.json
+            echo "✅ pm2 restart deploy.json"
