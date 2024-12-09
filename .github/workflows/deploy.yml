@@ -17,10 +17,10 @@ jobs:
         with:
           go-version: 1.23
       - run: go version
-      - run: ll && pwd
+      - run: ls && pwd
       - run: cd ./server
       - run: go mod tidy
-      - run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -o server
+      - run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -o server/dist
         
       # 部署到yingshi服务器
       # - name: Deploy for yingshi
@@ -28,7 +28,7 @@ jobs:
       #   env:
       #     SSH_PRIVATE_KEY: ${{ secrets.KEY_YINGSHI }} # 服务器的key
       #     ARGS: '-rltgoDzvO'  #(optional, default '-rltgoDzvO')
-      #     SOURCE: server/ # 这是要复制到服务器的文件夹名称
+      #     SOURCE: server/dist # 这是要复制到服务器的文件夹名称
       #     REMOTE_HOST: ${{ secrets.HOST_YINGSHI }} # 你的服务器公网地址
       #     REMOTE_USER: ${{ secrets.USERNAME_YINGSHI }} # 服务器登录用户名
       #     TARGET: /home/wwwroot/gofilm-frontend/.output # 放到的目标地址
