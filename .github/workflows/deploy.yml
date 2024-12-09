@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
-      # 这里是在 dist 目录下打出一个 service 二进制执行文件
+      # dist 目录下打出一个 service 二进制执行文件
       - uses: actions/setup-go@v3
         name: Set up Go
         with:
@@ -37,18 +37,15 @@ jobs:
           echo "✅ 5. 编译 dytt"
       - run: cp ./ecosystem/deploy.json dist # 复制一份启动文件
       - run: ls dist && pwd
+
+      - name: Rename binary for yingshi
+        run: |
+          mv dist/service_yingshi dist/service
+          echo "✅ 准备二进制文件"
       
       # 部署到yingshi服务器，把 dist 目录下的执行文件上传到服务器 的 /home/wwwroot/gofilm-backend/dist 目录下
       - name: Deploy for yingshi
         uses: easingthemes/ssh-deploy@v2.1.5
-        with:
-          SCRIPT_BEFORE: |
-            whoami
-            ls -al
-            pwd
-            echo ${{ secrets.HOST_YINGSHI }}
-            mv dist/service_dytt dist/service
-            echo "✅ 复制 service_dytt 到 service"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.KEY_YINGSHI }} # 服务器的key
           ARGS: '-rltgoDzvO'  #(optional, default '-rltgoDzvO')
