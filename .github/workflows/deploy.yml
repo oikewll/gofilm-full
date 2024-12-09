@@ -17,6 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
+      # 这里是在 dist 目录下打出一个 service 二进制执行文件
       - uses: actions/setup-go@v3
         name: Set up Go
         with:
@@ -26,9 +27,10 @@ jobs:
           go mod tidy
       - run: go version
       - run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -o dist/service
+      - run: cp ./ecosystem/deploy.json dist # 复制一份启动文件
       - run: ls dist && pwd
       
-      # 部署到yingshi服务器
+      # 部署到yingshi服务器，把 dist 目录下的执行文件上传到服务器 的 /home/wwwroot/gofilm-backend/dist 目录下
       - name: Deploy for yingshi
         uses: easingthemes/ssh-deploy@v2.1.5
         env:
@@ -37,7 +39,7 @@ jobs:
           SOURCE: server/dist
           REMOTE_HOST: ${{ secrets.HOST_YINGSHI }} # 你的服务器公网地址
           REMOTE_USER: ${{ secrets.USERNAME_YINGSHI }} # 服务器登录用户名
-          TARGET: /home/wwwroot/gofilm-backend/server # 放到的目标地址
+          TARGET: /home/wwwroot/gofilm-backend # 放到的目标地址
       
       # 重启yingshi服务
       - name: Restart server yingshi
@@ -51,5 +53,6 @@ jobs:
             source ~/.nvm/nvm.sh
             npm --version
             pm2 --version
-            cd /home/wwwroot/gofilm-backend/
+            cd /home/wwwroot/gofilm-backend/dist
+            pm2 restart deploy.json
 
